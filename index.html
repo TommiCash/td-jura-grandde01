@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Jura Prüfung</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f4f4f4; }
+    .quiz-box { background: white; padding: 2rem; border-radius: 10px; max-width: 700px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .hidden { display: none; }
+    .question { margin-bottom: 1rem; font-weight: bold; }
+    .options input { margin-right: 0.5rem; }
+    button { padding: 0.5rem 1rem; border: none; background: #007BFF; color: white; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .thankyou { font-size: 1.2rem; font-weight: bold; text-align: center; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="quiz-box">
+    <div id="userForm">
+      <h2>Jura Prüfung Login</h2>
+      <p>Bitte gib deinen Namen und deine ID ein:</p>
+      <input type="text" id="name" placeholder="Name"><br><br>
+      <input type="text" id="playerID" placeholder="ID"><br><br>
+      <button onclick="startQuiz()">Starten</button>
+    </div>
+
+    <div id="quizSection" class="hidden">
+      <div id="quiz"></div>
+      <button onclick="submitQuiz()">Abschicken</button>
+    </div>
+
+    <div id="thankYou" class="thankyou hidden">
+      Danke für deine Teilnahme! Deine Antworten wurden gespeichert.
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        q: "Was kostet das Fahren ohne Fahrerlaubnis?",
+        options: ["10.000 €", "5.000 €", "7.500 €", "15.000 €"],
+        answer: 2
+      },
+      {
+        q: "Welches Gesetz greift bei Mord?",
+        options: ["StGB", "StVO", "BtMG", "WaffG"],
+        answer: 0
+      },
+      {
+        q: "Wofür gibt es Haft, aber kein Bußgeld?",
+        options: ["Totschlag", "Fahrlässige Körperverletzung", "Datenschutzverstoß", "Meth-Besitz"],
+        answer: 0
+      }
+    ];
+
+    function startQuiz() {
+      const name = document.getElementById("name").value.trim();
+      const playerID = document.getElementById("playerID").value.trim();
+      if (!name || !playerID) {
+        alert("Bitte fülle alle Felder aus.");
+        return;
+      }
+      document.getElementById("userForm").classList.add("hidden");
+      document.getElementById("quizSection").classList.remove("hidden");
+      loadQuiz();
+    }
+
+    function loadQuiz() {
+      const quiz = document.getElementById("quiz");
+      questions.forEach((q, i) => {
+        const div = document.createElement("div");
+        div.className = "question-box";
+        div.innerHTML = `
+          <div class="question">${i + 1}. ${q.q}</div>
+          <div class="options">
+            ${q.options.map((opt, idx) =>
+              `<label><input type="radio" name="q${i}" value="${idx}"> ${opt}</label><br>`).join('')}
+          </div>`;
+        quiz.appendChild(div);
+      });
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      const answers = [];
+      questions.forEach((q, i) => {
+        const answer = document.querySelector(`input[name="q${i}"]:checked`);
+        const selected = answer ? parseInt(answer.value) : null;
+        if (selected === q.answer) score++;
+        answers.push({ question: q.q, selected, correct: q.answer });
+      });
+
+      // Simuliert das Speichern für Admin-Zwecke (hier nur Konsole, später evtl. Datenbank oder Google Sheets)
+      const name = document.getElementById("name").value.trim();
+      const playerID = document.getElementById("playerID").value.trim();
+      const resultData = {
+        name,
+        playerID,
+        score,
+        answers
+      };
+      console.log("Antwort gespeichert:", resultData); // Nur für Admin
+
+      document.getElementById("quizSection").classList.add("hidden");
+      document.getElementById("thankYou").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
