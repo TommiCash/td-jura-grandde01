@@ -5,63 +5,60 @@
   <title>Jura Prüfung</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 2rem; background: #f4f4f4; }
-    .quiz-box { background: white; padding: 2rem; border-radius: 10px; max-width: 700px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .hidden { display: none; }
+    .quiz-box { background: white; padding: 2rem; border-radius: 10px; max-width: 800px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     .question { margin-bottom: 1rem; font-weight: bold; }
     .options input { margin-right: 0.5rem; }
     button { padding: 0.5rem 1rem; border: none; background: #007BFF; color: white; border-radius: 5px; cursor: pointer; }
     button:hover { background: #0056b3; }
-    .thankyou { font-size: 1.2rem; font-weight: bold; text-align: center; margin-top: 2rem; }
+    .result { margin-top: 2rem; font-size: 1.2rem; font-weight: bold; }
+    #quiz-section { display: none; }
   </style>
 </head>
 <body>
   <div class="quiz-box">
-    <div id="userForm">
-      <h2>Jura Prüfung Login</h2>
-      <p>Bitte gib deinen Namen und deine ID ein:</p>
-      <input type="text" id="name" placeholder="Name"><br><br>
-      <input type="text" id="playerID" placeholder="ID"><br><br>
-      <button onclick="startQuiz()">Starten</button>
+    <h1>Jura Prüfung</h1>
+    <div id="login-section">
+      <p><label>Name: <input type="text" id="username" required></label></p>
+      <p><label>ID: <input type="text" id="userid" required></label></p>
+      <button onclick="startQuiz()">Start</button>
     </div>
 
-    <div id="quizSection" class="hidden">
+    <div id="quiz-section">
       <div id="quiz"></div>
       <button onclick="submitQuiz()">Abschicken</button>
     </div>
 
-    <div id="thankYou" class="thankyou hidden">
-      Danke für deine Teilnahme! Deine Antworten wurden gespeichert.
-    </div>
+    <div id="result" class="result"></div>
   </div>
 
   <script>
     const questions = [
-      {
-        q: "Was kostet das Fahren ohne Fahrerlaubnis?",
-        options: ["10.000 €", "5.000 €", "7.500 €", "15.000 €"],
-        answer: 2
-      },
-      {
-        q: "Welches Gesetz greift bei Mord?",
-        options: ["StGB", "StVO", "BtMG", "WaffG"],
-        answer: 0
-      },
-      {
-        q: "Wofür gibt es Haft, aber kein Bußgeld?",
-        options: ["Totschlag", "Fahrlässige Körperverletzung", "Datenschutzverstoß", "Meth-Besitz"],
-        answer: 0
-      }
+      { q: "Was kostet das Fahren ohne Fahrerlaubnis?", options: ["10.000 €", "5.000 €", "7.500 €", "15.000 €"], answer: 2 },
+      { q: "Welches Gesetz greift bei Mord?", options: ["StGB", "StVO", "BtMG", "WaffG"], answer: 0 },
+      { q: "Wofür gibt es Haft, aber kein Bußgeld?", options: ["Totschlag", "Fahrlässige Körperverletzung", "Datenschutzverstoß", "Meth-Besitz"], answer: 0 },
+      { q: "Wie hoch ist das Bußgeld für Fahren ohne Licht bei Nacht?", options: ["15 €", "25 €", "40 €", "10 €"], answer: 1 },
+      { q: "BtMG steht für...", options: ["Betäubungsmittelgesetz", "Bundestechnisches Militärgesetz", "Beamten-Transportgesetz", "Bußgeld-Tatmittelgesetz"], answer: 0 },
+      { q: "Was ist eine Fangfrage?", options: ["Eine besonders schwere Frage", "Eine Frage mit doppeltem Boden", "Eine juristisch falsche Frage", "Eine Frage ohne Antwort"], answer: 1 },
+      { q: "Wie viele Punkte gibt es in Flensburg für Rotlichtverstoß mit Gefährdung?", options: ["1", "2", "3", "0"], answer: 2 },
+      { q: "StVO regelt...", options: ["Straßenverkehrsordnung", "Strafvollzugsordnung", "Staatsverfassung", "Stromversorgungsverordnung"], answer: 0 },
+      { q: "Wer darf Strafzettel ausstellen?", options: ["Jeder", "Nur Polizisten", "Nur Beamte", "Nur Behördenmitarbeiter"], answer: 3 },
+      { q: "Was ist bei einer Anzeige wegen Diebstahl zu beachten?", options: ["Tatnachweis", "Anzeigezeit", "Zeugen", "Alles genannte"], answer: 3 },
+      { q: "Welche Strafe droht bei Beleidigung gemäß StGB?", options: ["Bis 1 Jahr Haft oder Geldstrafe", "Nur Geldstrafe", "Führerscheinentzug", "Verwarnung"], answer: 0 },
+      { q: "Was passiert bei 0,5 Promille Alkohol im Straßenverkehr?", options: ["Nichts", "Bußgeld und Fahrverbot", "Gefängnis", "Verwarnung"], answer: 1 },
+      { q: "Fangfrage: Ist das Tragen von Waffen in der Öffentlichkeit erlaubt?", options: ["Immer", "Ja, mit Waffenschein", "Nein, niemals", "Nur bei Gefahr"], answer: 1 },
+      { q: "BDG steht für...", options: ["Bundesdatenschutzgesetz", "Bundesdisziplinargesetz", "Bürgerdienstgesetz", "Beamten-Dienst-Gesetz"], answer: 1 },
+      { q: "Wie nennt man das Prinzip 'Unschuldig bis zum Beweis der Schuld'?", options: ["Rechtsstaatlichkeit", "Unschuldsvermutung", "Gnadengesetz", "Legalitätsprinzip"], answer: 1 },
     ];
 
     function startQuiz() {
-      const name = document.getElementById("name").value.trim();
-      const playerID = document.getElementById("playerID").value.trim();
-      if (!name || !playerID) {
-        alert("Bitte fülle alle Felder aus.");
+      const name = document.getElementById("username").value.trim();
+      const id = document.getElementById("userid").value.trim();
+      if (!name || !id) {
+        alert("Bitte Name und ID eingeben!");
         return;
       }
-      document.getElementById("userForm").classList.add("hidden");
-      document.getElementById("quizSection").classList.remove("hidden");
+      document.getElementById("login-section").style.display = "none";
+      document.getElementById("quiz-section").style.display = "block";
       loadQuiz();
     }
 
@@ -73,8 +70,7 @@
         div.innerHTML = `
           <div class="question">${i + 1}. ${q.q}</div>
           <div class="options">
-            ${q.options.map((opt, idx) =>
-              `<label><input type="radio" name="q${i}" value="${idx}"> ${opt}</label><br>`).join('')}
+            ${q.options.map((opt, idx) => `<label><input type="radio" name="q${i}" value="${idx}"> ${opt}</label><br>`).join('')}
           </div>`;
         quiz.appendChild(div);
       });
@@ -84,25 +80,32 @@
       let score = 0;
       const answers = [];
       questions.forEach((q, i) => {
-        const answer = document.querySelector(`input[name="q${i}"]:checked`);
-        const selected = answer ? parseInt(answer.value) : null;
-        if (selected === q.answer) score++;
-        answers.push({ question: q.q, selected, correct: q.answer });
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        const ans = selected ? parseInt(selected.value) : -1;
+        answers.push(ans);
+        if (ans === q.answer) score++;
       });
 
-      // Simuliert das Speichern für Admin-Zwecke (hier nur Konsole, später evtl. Datenbank oder Google Sheets)
-      const name = document.getElementById("name").value.trim();
-      const playerID = document.getElementById("playerID").value.trim();
-      const resultData = {
-        name,
-        playerID,
+      const payload = {
+        name: document.getElementById("username").value.trim(),
+        id: document.getElementById("userid").value.trim(),
         score,
         answers
       };
-      console.log("Antwort gespeichert:", resultData); // Nur für Admin
 
-      document.getElementById("quizSection").classList.add("hidden");
-      document.getElementById("thankYou").classList.remove("hidden");
+      fetch("https://script.google.com/macros/s/AKfycbyuyO0lv8JRFMkZR46GDRQmyUavRj18xMIAPJ3zBBWn4Dng5BnekOOmd7d7PauJWl8/exec", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(() => {
+        document.getElementById("quiz-section").style.display = "none";
+        document.getElementById("result").innerText = "Vielen Dank für deine Teilnahme!";
+      })
+      .catch(err => {
+        document.getElementById("result").innerText = "Fehler beim Senden der Daten.";
+        console.error(err);
+      });
     }
   </script>
 </body>
